@@ -1,5 +1,8 @@
 import random
-valores = ['2', '3', '4', '5', '6', '7', '8', '9', '10', "J", "Q", "K", "Ás"]
+
+
+
+valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
 naipes = ["Copas", "Ouros", "Espadas", "Paus"]
 
 class Carta:
@@ -35,7 +38,8 @@ class Jogador:
 
     def ver_mao(self):
         for carta in self.mao:
-            print(carta)
+            print(f'{carta}, ', end='')
+        print()
 
     def pedir_carta(self):
         while True:
@@ -47,10 +51,12 @@ class Jogador:
     def calcular_pontucao(self):
         pontuacao_provisoria = 0
         for carta in self.mao:
-            if carta.valor.isnumeric:
+            if carta.valor.isnumeric():
                 pontuacao_provisoria += int(carta.valor)
-            elif carta.valor == 'KQJ':
+            elif carta.valor in 'KQJ':
                     pontuacao_provisoria += 10
+            else:
+                pontuacao_provisoria += 1
         self.pontuacao = pontuacao_provisoria
         return self.pontuacao
 
@@ -71,15 +77,16 @@ class Jogo:
         Prepara o baralho e destribui as duas cartas iniciais
         :return: none
         """
-
-        for c in range(2):
-            dealer.pedir_carta()
-            jogador.pedir_carta()
+        jogo.baralho.embaralhar()
         jogo.fluxo_de_jogo()
 
     def fluxo_de_jogo(self):
+        for c in range(2):
+            dealer.pedir_carta()
+            jogador.pedir_carta()
         jogo.turno_do_jogador()
         jogo.turno_do_dealer()
+        jogo.verificar_vencedor()
 
     def turno_do_jogador(self):
         print('JOGADOR')
@@ -96,12 +103,28 @@ class Jogo:
                 break
 
     def turno_do_dealer(self):
+        print()
         print('DEALER')
         dealer.calcular_pontucao()
         dealer.ver_mao()
         print(f'Pontuação: {dealer.pontuacao}')
-        while dealer.pontuacao <= jogador.pontuacao:
-            dealer.pedir_carta()
+        print()
+        if jogador.pontuacao <= 21:
+            while dealer.pontuacao < jogador.pontuacao and dealer.pontuacao < 21:
+                dealer.pedir_carta()
+                print('DEALER')
+                dealer.calcular_pontucao()
+                dealer.ver_mao()
+                print(f'Pontuação: {dealer.pontuacao}')
+                print()
+
+    def verificar_vencedor(self):
+        if jogador.pontuacao <= 21 < dealer.pontuacao or dealer.pontuacao < jogador.pontuacao <= 21:
+            print('Jogador venceu!')
+        elif jogador.pontuacao == dealer.pontuacao:
+            print('Deu empate!')
+        else:
+            print('Dealer venceu!')
 
 jogo = Jogo()
 jogador = Jogador()
