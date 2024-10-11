@@ -14,6 +14,7 @@ def valida_res(msg):
             return r
         else:
             print('Informe uma opçao válida(tente (s)im ou (n)ão)!')
+            
 class Carta:
     def __init__(self, valor, naipe):
         self.naipe = naipe
